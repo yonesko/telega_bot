@@ -1,0 +1,19 @@
+plugins {
+    id 'application'
+    id 'java'
+}
+group 'glebio'
+version '1.0-SNAPSHOT'
+sourceCompatibility = 11
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile "org.telegram:telegrambots:4.3.1"
+}
+application {
+    mainClassName = 'glebio.Main'
+}

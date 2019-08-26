@@ -23,7 +23,6 @@ public class AnonChatRoomBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println(Thread.currentThread().getName());
         logUpdate(update);
         Long chatId = update.getMessage().getChatId();
         if (update.getMessage().getText().equals("/changemate")) {

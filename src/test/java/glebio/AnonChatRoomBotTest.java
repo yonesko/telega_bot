@@ -16,7 +16,21 @@ import static org.mockito.Mockito.when;
 public class AnonChatRoomBotTest {
 
     @Test
-    public void regularScenarioTestTest() {
+    public void regularScenarioWith2UsersTest() {
+        AnonChatRoomBot bot = spy(new AnonChatRoomBot());
+        //Миролюб connects to bot
+        bot.onUpdateReceived(buildUpdate("/start", 1));
+        //he has to wait
+        verify(bot).execute(1L, "У вас пока еще нет собеседника, ждем...");
+        //Мирослава connects to bot
+        bot.onUpdateReceived(buildUpdate("/start", 2));
+        //then Мирослава and Миролюб start to talk
+        bot.onUpdateReceived(buildUpdate("Привет, Мирослава", 1));
+        verify(bot).execute(2L, "Привет, Мирослава");
+    }
+
+    @Test
+    public void regularScenarioWith3UsersTest() {
         AnonChatRoomBot bot = spy(new AnonChatRoomBot());
         //Миролюб connects to bot
         bot.onUpdateReceived(buildUpdate("/start", 1));

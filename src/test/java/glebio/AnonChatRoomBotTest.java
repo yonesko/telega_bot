@@ -1,17 +1,17 @@
 package glebio;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 import org.junit.Test;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.mockito.internal.util.reflection.FieldSetter;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,7 +22,7 @@ public class AnonChatRoomBotTest {
 
     @Test
     public void regularScenarioWith2UsersTest() {
-        AnonChatRoomBot bot = spy(new AnonChatRoomBot());
+        AnonChatRoomBot bot = buildAnonChatRoomBot();
         //Миролюб connects to bot
         bot.onUpdateReceived(buildUpdate("/start", 1));
         //he has to wait
@@ -39,7 +39,7 @@ public class AnonChatRoomBotTest {
 
     @Test
     public void regularScenarioWith3UsersTest() {
-        AnonChatRoomBot bot = spy(new AnonChatRoomBot());
+        AnonChatRoomBot bot = buildAnonChatRoomBot();
         //Миролюб connects to bot
         bot.onUpdateReceived(buildUpdate("/start", 1));
         //he has to wait
@@ -55,8 +55,8 @@ public class AnonChatRoomBotTest {
     }
 
     @Test
-    public void changeMateTest()  {
-        AnonChatRoomBot bot = spy(new AnonChatRoomBot());
+    public void changeMateTest() {
+        AnonChatRoomBot bot = buildAnonChatRoomBot();
         //Миролюб connects to bot
         bot.onUpdateReceived(buildUpdate("/start", 1));
         //he has to wait
@@ -79,6 +79,18 @@ public class AnonChatRoomBotTest {
         //Миролюб is looking for new mate
         bot.onUpdateReceived(buildUpdate("ну чо", 1));
         verify(bot).execute(1L, "У вас пока еще нет собеседника, ждем...");
+    }
+
+    private AnonChatRoomBot buildAnonChatRoomBot() {
+        AnonChatRoomBot bot = mock(AnonChatRoomBot.class);
+        doCallRealMethod().when(bot).onUpdateReceived(any());
+        try {
+            FieldSetter.setField(bot, AnonChatRoomBot.class.getDeclaredField("chats"), new HashMap<>());
+            FieldSetter.setField(bot, AnonChatRoomBot.class.getDeclaredField("pending"), new HashSet<>());
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+        return bot;
     }
 
     private Update buildUpdate(String text, long chatId) {

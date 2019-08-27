@@ -39,6 +39,9 @@ public class AnonChatRoomBot extends TelegramLongPollingBot {
                 chats.put(objects[0], objects[1]);
                 chats.put(objects[1], objects[0]);
                 pending.clear();
+                execute(objects[0], "Мы нашил вам собеседника, напишите ему(ей)!");
+                execute(objects[1], "Мы нашил вам собеседника, напишите ему(ей)!");
+                return;
             } else {
                 execute(chatId, "У вас пока еще нет собеседника, ждем...");
                 return;

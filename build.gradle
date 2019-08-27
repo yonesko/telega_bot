@@ -20,5 +20,5 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.23.4'
 }
 application {
-    mainClassName = 'glebio.Main'
+    mainClassName = 'glebio.AnonChatRoomApp'
 }

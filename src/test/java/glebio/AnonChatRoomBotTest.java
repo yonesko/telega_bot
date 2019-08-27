@@ -41,6 +41,9 @@ public class AnonChatRoomBotTest {
         //then Мирослава and Миролюб start to talk
         bot.onUpdateReceived(buildUpdate("Привет, Мирослава", 1));
         verify(bot).execute(2L, "Привет, Мирослава");
+        //Пересвет connects to bot and waits
+        bot.onUpdateReceived(buildUpdate("ну чо там?", 3));
+        verify(bot).execute(3L, "У вас пока еще нет собеседника, ждем...");
     }
 
     private Update buildUpdate(String text, long chatId) {

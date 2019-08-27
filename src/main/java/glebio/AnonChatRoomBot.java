@@ -48,7 +48,7 @@ public class AnonChatRoomBot extends TelegramLongPollingBot {
         execute(chats.get(chatId), update.getMessage().getText());
     }
 
-    private void execute(Long chatId, String text) {
+    void execute(Long chatId, String text) {
         try {
             SendMessage message = new SendMessage(chatId, text);
             execute(message);
@@ -62,7 +62,7 @@ public class AnonChatRoomBot extends TelegramLongPollingBot {
         System.out.println(update);
         Message message = update.getMessage();
         System.out.println(String.format(
-            "%s: %s",
+            "User %s Text: %s",
             message.getFrom().getUserName(),
             message.getText()
         ));

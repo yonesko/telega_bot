@@ -14,6 +14,7 @@ public class Main {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
             telegramBotsApi.registerBot(new AnonChatRoomBot());
+            System.out.println("Started " + AnonChatRoomBot.class.getSimpleName());
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

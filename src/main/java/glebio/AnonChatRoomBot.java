@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -16,6 +18,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
  * @author Gleb Danichev
  */
 public class AnonChatRoomBot extends TelegramLongPollingBot {
+
+    private final static Logger logger = LogManager.getLogger();
 
     private final Map<Long, Long> chats = new HashMap<>();
 
@@ -55,21 +59,21 @@ public class AnonChatRoomBot extends TelegramLongPollingBot {
         try {
             SendMessage message = new SendMessage(chatId, text);
             execute(message);
-            System.out.println("Sent " + message);
+            logger.info("Sent " + message);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
 
     private void logUpdate(Update update) {
-        System.out.println(update);
+        logger.info(update);
         Message message = update.getMessage();
-        System.out.println(String.format(
+        logger.info(String.format(
             "User %s Text: %s",
             message.getFrom().getUserName(),
             message.getText()
         ));
-        System.out.println("chats = " + chats);
+        logger.info("chats = " + chats);
     }
 
     @Override

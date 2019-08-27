@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 /**
  * @author Gleb Danichev
  */
-public class Main {
+public class AnonChatRoomApp {
 
     public static void main(String[] args) {
         ApiContextInitializer.init();

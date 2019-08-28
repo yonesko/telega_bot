@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.FieldSetter;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -61,7 +60,7 @@ public class AnonChatRoomBotTest {
     }
 
     @Test
-    public void changeMateTest() {
+    public void changeMateTwoPeopleTest() {
         AnonChatRoomBot bot = buildAnonChatRoomBot();
         //Миролюб connects to bot
         bot.onUpdateReceived(buildUpdate("/start", 1));
@@ -86,6 +85,49 @@ public class AnonChatRoomBotTest {
         //Мирослава can't connect to Миролюб
         bot.onUpdateReceived(buildUpdate("Как дела, Миролюб?", 2));
         verify(bot).execute(2L, "У вас пока еще нет собеседника, ждем...");
+    }
+
+    @Test
+    public void changeMateThreeTest() {
+        AnonChatRoomBot bot = buildAnonChatRoomBot();
+        //Миролюб connects to bot
+        bot.onUpdateReceived(buildUpdate("/start", 1));
+        //he has to wait
+        verify(bot).execute(1L, "У вас пока еще нет собеседника, ждем...");
+        clearInvocations(bot);
+        //Мирослава connects to bot
+        bot.onUpdateReceived(buildUpdate("/start", 2));
+        //Миролюб and Мирослава notified about each other
+        verify(bot).execute(1L, "Мы нашил вам собеседника, напишите ему(ей)!");
+        verify(bot).execute(2L, "Мы нашил вам собеседника, напишите ему(ей)!");
+        clearInvocations(bot);
+        //then Мирослава and Миролюб start to talk
+        bot.onUpdateReceived(buildUpdate("Привет, Мирослава", 1));
+        verify(bot).execute(2L, "Привет, Мирослава");
+        clearInvocations(bot);
+        bot.onUpdateReceived(buildUpdate("Hi, Миролюб", 2));
+        verify(bot).execute(1L, "Hi, Миролюб");
+        clearInvocations(bot);
+        //Евпатий connects to bot
+        bot.onUpdateReceived(buildUpdate("/start", 3));
+        //he has to wait
+        verify(bot).execute(3L, "У вас пока еще нет собеседника, ждем...");
+        clearInvocations(bot);
+        //Миролюб tired of Мирослава and changes chat
+        bot.onUpdateReceived(buildUpdate("/changemate", 1));
+        //Мирослава connects to Евпатий
+        bot.onUpdateReceived(buildUpdate("Как дела, Миролюб?", 2));
+        verify(bot).execute(2L, "Мы нашил вам собеседника, напишите ему(ей)!");
+        verify(bot).execute(3L, "Мы нашил вам собеседника, напишите ему(ей)!");
+        clearInvocations(bot);
+        //then Мирослава and Евпатий start to talk
+        bot.onUpdateReceived(buildUpdate("Привет, Евпатий", 2));
+        verify(bot).execute(3L, "Привет, Евпатий");
+        clearInvocations(bot);
+        //and Миролюб has to wait
+        bot.onUpdateReceived(buildUpdate("Есть кто?", 1));
+        verify(bot).execute(1L, "У вас пока еще нет собеседника, ждем...");
+        clearInvocations(bot);
     }
 
     private AnonChatRoomBot buildAnonChatRoomBot() {

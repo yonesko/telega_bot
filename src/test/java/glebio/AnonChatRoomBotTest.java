@@ -29,11 +29,13 @@ public class AnonChatRoomBotTest {
         bot.onUpdateReceived(buildUpdate("/start", 1));
         //he has to wait
         verify(bot).execute(1L, "У вас пока еще нет собеседника, ждем...");
+        clearInvocations(bot);
         //Мирослава connects to bot
         bot.onUpdateReceived(buildUpdate("/start", 2));
         //Миролюб and Мирослава notified about each other
         verify(bot).execute(1L, "Мы нашил вам собеседника, напишите ему(ей)!");
         verify(bot).execute(2L, "Мы нашил вам собеседника, напишите ему(ей)!");
+        clearInvocations(bot);
         //then Мирослава and Миролюб start to talk
         bot.onUpdateReceived(buildUpdate("Привет, Мирослава", 1));
         verify(bot).execute(2L, "Привет, Мирослава");
@@ -46,11 +48,13 @@ public class AnonChatRoomBotTest {
         bot.onUpdateReceived(buildUpdate("/start", 1));
         //he has to wait
         verify(bot).execute(1L, "У вас пока еще нет собеседника, ждем...");
+        clearInvocations(bot);
         //Мирослава connects to bot
         bot.onUpdateReceived(buildUpdate("/start", 2));
         //then Мирослава and Миролюб start to talk
         bot.onUpdateReceived(buildUpdate("Привет, Мирослава", 1));
         verify(bot).execute(2L, "Привет, Мирослава");
+        clearInvocations(bot);
         //Пересвет connects to bot and waits
         bot.onUpdateReceived(buildUpdate("ну чо там?", 3));
         verify(bot).execute(3L, "У вас пока еще нет собеседника, ждем...");

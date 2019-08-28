@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.FieldSetter;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -61,24 +63,25 @@ public class AnonChatRoomBotTest {
         bot.onUpdateReceived(buildUpdate("/start", 1));
         //he has to wait
         verify(bot).execute(1L, "У вас пока еще нет собеседника, ждем...");
+        clearInvocations(bot);
         //Мирослава connects to bot
         bot.onUpdateReceived(buildUpdate("/start", 2));
         //Миролюб and Мирослава notified about each other
         verify(bot).execute(1L, "Мы нашил вам собеседника, напишите ему(ей)!");
         verify(bot).execute(2L, "Мы нашил вам собеседника, напишите ему(ей)!");
+        clearInvocations(bot);
         //then Мирослава and Миролюб start to talk
         bot.onUpdateReceived(buildUpdate("Привет, Мирослава", 1));
         verify(bot).execute(2L, "Привет, Мирослава");
+        clearInvocations(bot);
         bot.onUpdateReceived(buildUpdate("Hi, Миролюб", 2));
         verify(bot).execute(1L, "Hi, Миролюб");
+        clearInvocations(bot);
         //Миролюб tired of Мирослава and changes chat
         bot.onUpdateReceived(buildUpdate("/changemate", 1));
         //Мирослава can't connect to Миролюб
         bot.onUpdateReceived(buildUpdate("Как дела, Миролюб?", 2));
         verify(bot).execute(2L, "У вас пока еще нет собеседника, ждем...");
-        //Миролюб is looking for new mate
-        bot.onUpdateReceived(buildUpdate("ну чо", 1));
-        verify(bot).execute(1L, "У вас пока еще нет собеседника, ждем...");
     }
 
     private AnonChatRoomBot buildAnonChatRoomBot() {

@@ -33,7 +33,6 @@ public class AnonChatRoomBot extends TelegramLongPollingBot {
             if (chats.containsKey(chatId)) {
                 chats.remove(chats.remove(chatId));
             }
-            return;
         }
 
         if (!chats.containsKey(chatId)) {

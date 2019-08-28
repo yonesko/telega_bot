@@ -60,7 +60,7 @@ public class AnonChatRoomBotTest {
     }
 
     @Test
-    public void changeMateTwoPeopleTest() {
+    public void changeMate2UsersTest() {
         AnonChatRoomBot bot = buildAnonChatRoomBot();
         //Миролюб connects to bot
         bot.onUpdateReceived(buildUpdate("/start", 1));
@@ -82,13 +82,11 @@ public class AnonChatRoomBotTest {
         clearInvocations(bot);
         //Миролюб tired of Мирослава and changes chat
         bot.onUpdateReceived(buildUpdate("/changemate", 1));
-        //Мирослава can't connect to Миролюб
-        bot.onUpdateReceived(buildUpdate("Как дела, Миролюб?", 2));
-        verify(bot).execute(2L, "У вас пока еще нет собеседника, ждем...");
+        verify(bot).execute(1L, "У вас пока еще нет собеседника, ждем...");
     }
 
     @Test
-    public void changeMateThreeTest() {
+    public void changeMate3UsersTest() {
         AnonChatRoomBot bot = buildAnonChatRoomBot();
         //Миролюб connects to bot
         bot.onUpdateReceived(buildUpdate("/start", 1));
@@ -115,18 +113,17 @@ public class AnonChatRoomBotTest {
         clearInvocations(bot);
         //Миролюб tired of Мирослава and changes chat
         bot.onUpdateReceived(buildUpdate("/changemate", 1));
-        //Мирослава connects to Евпатий
-        bot.onUpdateReceived(buildUpdate("Как дела, Миролюб?", 2));
-        verify(bot).execute(2L, "Мы нашил вам собеседника, напишите ему(ей)!");
+        //Миролюб connects to Евпатий
+        verify(bot).execute(1L, "Мы нашил вам собеседника, напишите ему(ей)!");
         verify(bot).execute(3L, "Мы нашил вам собеседника, напишите ему(ей)!");
         clearInvocations(bot);
-        //then Мирослава and Евпатий start to talk
-        bot.onUpdateReceived(buildUpdate("Привет, Евпатий", 2));
+        //then Миролюб and Евпатий start to talk
+        bot.onUpdateReceived(buildUpdate("Привет, Евпатий", 1));
         verify(bot).execute(3L, "Привет, Евпатий");
         clearInvocations(bot);
-        //and Миролюб has to wait
-        bot.onUpdateReceived(buildUpdate("Есть кто?", 1));
-        verify(bot).execute(1L, "У вас пока еще нет собеседника, ждем...");
+        //and Мирослава has to wait
+        bot.onUpdateReceived(buildUpdate("Есть кто?", 2));
+        verify(bot).execute(2L, "У вас пока еще нет собеседника, ждем...");
         clearInvocations(bot);
     }
 
